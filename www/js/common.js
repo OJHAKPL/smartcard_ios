@@ -1,8 +1,8 @@
-	window.webservice_url = "http://192.168.1.16/projects/laravel/smartcard/admin/";
-	//window.webservice_url = "https://www.smartcardglobal.com/admin/";
+	//window.webservice_url = "http://192.168.1.16/projects/laravel/smartcard/admin/";
+	window.webservice_url = "https://www.smartcardglobal.com/admin/";
 	
 	$(document).on('pagebeforecreate', '[data-role="page"]', function() {
-		//checkConnection();
+		checkConnection();
 	});
 	
 	function checkConnection() {
@@ -46,7 +46,7 @@
 			} else{
 				loginid = localStorage.getItem('userid-2');
 			} 
-			//alert ('tocken id'+data.registrationId);
+			alert ('tocken id'+data.registrationId);
             // send data.registrationId to push service
 			$.post(
 				webservice_url+'web-device-tocken',
@@ -127,7 +127,7 @@
 						} else {
 							localStorage.setItem('userid-2', field.id);
 						}
-						//pushNotify();
+						pushNotify();
 						cardlist();
 					} else {
 						if(dataArray.error){
