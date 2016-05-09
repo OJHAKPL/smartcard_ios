@@ -51,7 +51,6 @@
   
 	
    <access origin="*"/>
-	 <plugin name="cordova-plugin-whitelist" version="1"/>
 	<plugin name="cordova-plugin-inappbrowser" spec="1.1.1" />
 	<plugin name="cordova-plugin-statusbar" spec="2.0.0" />
 	<plugin name="nl.x-services.plugins.socialsharing" source="pgb" spec="4.3.8" />
@@ -83,7 +82,7 @@
   <allow-intent href="sms:*"/>
   <allow-intent href="mailto:*"/>
   <allow-intent href="geo:*"/>
-  <allow-navigation href="*" />
+  
   <platform name="android">
     <allow-intent href="market:*"/>
   </platform>
