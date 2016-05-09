@@ -2,7 +2,7 @@
 	window.webservice_url = "https://www.smartcardglobal.com/admin/";
 	
 	$(document).on('pagebeforecreate', '[data-role="page"]', function() {
-		checkConnection();
+		//checkConnection();
 	});
 	
 	function checkConnection() {
