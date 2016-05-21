@@ -1,10 +1,26 @@
 	//window.webservice_url = "http://192.168.1.16/projects/laravel/smartcard/admin/";
 	window.webservice_url = "https://www.smartcardglobal.com/admin/";
 	
+	
 	$(document).on('pagebeforecreate', '[data-role="page"]', function() {
 		//checkConnection();
 	});
 	
+	$('#login').live('pageinit', function(e) { checkPreAuth(); });
+	$("#roleManagement").submit(function() {
+		homeLogin();
+	});
+	
+	
+	function checkPreAuth() {
+		user_id = window.localStorage.getItem('userid');
+		if(user_id==null || user_id==''){
+			$.mobile.changePage("#login",{allowSamePageTransition:false,reloadPage:false,changeHash:true,transition:"slide"});
+		} else {
+			cardlist();
+		}
+	
+	}
 	function checkConnection() {
         var networkState = navigator.network.connection.type;
         var states = {};
@@ -28,7 +44,7 @@
 
 	
 	function pushNotify() {
-		
+		//alert('push');
 		var push = PushNotification.init({
             "ios": {
 				"alert": true,
@@ -38,7 +54,7 @@
 				"clearBadge": true
             }
         });
-		
+
 		push.on('registration', function(data) {
 			var loginid='';
 			if (localStorage.getItem('userid')){
@@ -46,7 +62,7 @@
 			} else{
 				loginid = localStorage.getItem('userid-2');
 			} 
-			alert ('tocken id'+data.registrationId);
+			//alert ('tocken id'+data.registrationId);
             // send data.registrationId to push service
 			$.post(
 				webservice_url+'web-device-tocken',
@@ -90,8 +106,7 @@
 			//console.log(e.message);
 		});
 		
-	}	
- 
+	}	 
 	
  
 	
@@ -370,7 +385,7 @@
 	}
 
 	function fail(error){
-		message = "An error has occurred: Code = "+ error.code
+		message = "Not able to upload this image, please try another!";
 		showAlert(message);
 	}
 	
@@ -389,6 +404,10 @@
 				},
 				phone: {
 					required: true,
+					number: true , minlength: 10 , maxlength: 10
+				},
+				mobile: {
+					number: true , minlength: 10 , maxlength: 10
 				}
 			},
 			messages: {
@@ -400,6 +419,9 @@
 				},
 				phone: {
 					required: "Please enter your phone."
+				},
+				mobile: {
+					
 				}
 			},
 			errorPlacement: function (error, element) {
@@ -438,8 +460,10 @@
 	
 	/*----------- card details ----------*/
 	function editCard(cardId){
+		
 		//alert('edit card'); 
 		$.mobile.changePage("#update-card",{allowSamePageTransition:false,reloadPage:false,changeHash:true,transition:"slide"});
+		
 		$.ajax({
 			type: 'POST',
 			url: webservice_url+'web-update-card/'+cardId+'',
@@ -506,11 +530,11 @@
 				error.appendTo(element.parent().add());
 			},
 			submitHandler:function (form) {
-				
+				var push_response = pushConfirm();
 				card_id = jQuery('#editcard').find('input[name="id"]').val();
 				$.ajax({
 					type: 'POST',
-					url: webservice_url+'web-update-card/'+card_id,
+					url: webservice_url+'web-update-card/'+card_id+'/'+push_response,
 					beforeSend: function(){
 						$('.loader_useredit').show();
 					},
@@ -525,6 +549,7 @@
 						}
 						if(dataMsg.success){
 							showAlert(dataMsg.success);
+							cartDetails(card_id);
 						}
 					},
 					dataType: 'html'
@@ -608,30 +633,50 @@
 	}	
 	
 	
-	function cardLinkSubmit(){
-		
-		$.ajax({
-			type: 'POST',
-			url: webservice_url+'web-update-link',
-			beforeSend: function(){
-				$('.loader_cardlinklist').show();
-			},
-			complete: function(){
-				$('.loader_cardlinklist').hide();
-			},
-			data : $('#editcard_link').serialize(),
-			success: function(updateCard) {
-				var dataMsg = jQuery.parseJSON(updateCard);	
-				if(dataMsg.error){
-					showAlert(dataMsg.error);
-				}
-				if(dataMsg.success){
-					showAlert(dataMsg.success);
+	/*--------------- Form Submit Card Link --------------*/
+	function cardLinkSubmit() {
+		var card_id = $('#id').val();
+		$('#editcard_link').validate({
+			rules: {
+				id: {
+					required: true
 				}
 			},
-			dataType: 'html'
+			messages: {
+				id: {
+					required: "Card id is null."
+				}
+			},
+			errorPlacement: function (error, element) {
+				error.appendTo(element.parent().add());
+			},
+			submitHandler:function (form) {
+				var push_response = pushConfirm();
+				$.ajax({
+					type: 'POST',
+					url: webservice_url+'web-update-link/'+push_response,
+					beforeSend: function(){
+						$('.loader_cardlinklist').show();
+					},
+					complete: function(){
+						$('.loader_cardlinklist').hide();
+					},
+					data : $('#editcard_link').serialize(),
+					success: function(updateCard) {
+						var dataMsg = jQuery.parseJSON(updateCard);	
+						if(dataMsg.error){
+							showAlert(dataMsg.error);
+						}
+						if(dataMsg.success){
+							showAlert(dataMsg.success);
+							cartDetails(card_id);
+						}
+					},
+					dataType: 'html'
+				});
+			}
 		});
-	}		
+	}  	
 	
 	
 	function deleteCardLink(cardlinkId){
@@ -643,8 +688,12 @@
 	}
 	
 	
+
+
 	
-	/*--------- Shared Card List-----------*/
+	
+	
+	/*--------- Edit Scroller -----------*/
 	function editscroller(cardId){ 
 	
 		$.mobile.changePage("#card-scroller",{allowSamePageTransition:false,reloadPage:false,changeHash:true,transition:"slide"});
@@ -714,31 +763,52 @@
 	}
 	
 	
-	function cardScrollerSubmit(){
+	/*--------------- Form Submit Card Scroller --------------*/
+	function cardScrollerSubmit() {
 		
-		$.ajax({
-			type: 'POST',
-			url: webservice_url+'web-update-scroller',
-			beforeSend: function(){
-				$('.loader_cardscroller').show();
-			},
-			complete: function(){
-				$('.loader_cardscroller').hide();
-			},
-			data : $('#editcard_scroller').serialize(),
-			success: function(data_get){ 
-			
-				var dataMsg = jQuery.parseJSON(data_get);	
-				if(dataMsg.error){
-					showAlert(dataMsg.error);
-				}
-				if(dataMsg.success){
-					showAlert(dataMsg.success);
+		$('#editcard_scroller').validate({
+			rules: {
+				id: {
+					required: true
 				}
 			},
-			dataType: 'html'
+			messages: {
+				id: {
+					required: "Card id is null."
+				}
+			},
+			errorPlacement: function (error, element) {
+				error.appendTo(element.parent().add());
+			},
+			submitHandler:function (form) {
+				var push_response = pushConfirm();
+				$.ajax({
+					type: 'POST',
+					url: webservice_url+'web-update-scroller/'+push_response,
+					beforeSend: function(){
+						$('.loader_cardscroller').show();
+					},
+					complete: function(){
+						$('.loader_cardscroller').hide();
+					},
+					data : $('#editcard_scroller').serialize(),
+					success: function(data_get){ 
+						var dataMsg = jQuery.parseJSON(data_get);	
+						if(dataMsg.error){
+							$('.loader_cardscroller').hide();
+							showAlert(dataMsg.error);
+						}
+						if(dataMsg.success){
+							$('.loader_cardscroller').hide();
+							showAlert(dataMsg.success);
+							cartDetails(card_id);
+						}
+					},
+					dataType: 'html'
+				});
+			}
 		});
-	}	
+	} 
 	
 	
 	function deleteCardScroller(cardscrollerId){
@@ -802,7 +872,7 @@
 				}
 				if(dataMsg.success){
 					showAlert(dataMsg.success);
-					basicCardList();
+					cartDetails(card_id);
 				}
 			},
 			dataType: 'html'
@@ -1099,7 +1169,7 @@
 			},
 			messages: {
 				forgot_email: {
-					required: "Email id is required."
+					required: "Email address is required."
 				} 
 			},
 			errorPlacement: function (error, element) {
@@ -1221,7 +1291,7 @@
 	/*---------- Delete Paper Card ---------*/
 	function deletePapercard(paper_card_id) {
 		
-		confirmBox = confirm('Are you sure you want to delete this row');
+		confirmBox = confirm('Are you sure you want to delete this paper card?');
 		if(confirmBox==true) {
 			$(".paper_card_dev_"+paper_card_id).remove();
 			$.ajax({
@@ -1322,7 +1392,7 @@
 	}
 
 	function failcard(error){
-		message =  "An error has occurred: Code = " +error.code
+		message = "Not able to upload this image, please try another!";
 		showAlert(message);
 	} 
 	
@@ -1336,6 +1406,10 @@
 					required: true,
 					email: true
 				},
+				c_email: {
+					required: true,
+					equalTo: "#email"
+				},
 				first_name: {
 					required: true
 				},
@@ -1344,6 +1418,7 @@
 				},
 				phone: {
 					required: true,
+					number: true , minlength: 10 , maxlength: 10
 				},
 				password: {
 					required: true, minlength: 6
@@ -1356,6 +1431,10 @@
  				email: {
 					required: "Please enter your email."
 				},
+				c_email: {
+					required: "Please enter your confirm email.",
+					equalTo: "Email address are not matching."
+				},
  				first_name: {
 					required: "Please enter your first name."
 				},
@@ -1363,7 +1442,8 @@
 					required: "Please enter your last name."
 				},
 				phone: {
-					required: "Please enter your phone."
+					required: "Please enter your phone.",
+					number: "Please enter your valid phone."
 				},
 				password: {
 					required: "Please enter your password."
@@ -1469,6 +1549,19 @@
 		});
 	}  
 	
+	function pushConfirm() {
+		var x;
+		if (confirm("Do you want to send push notifications for this update?") == true) {
+			x = "1";
+			return x;
+		} else {
+			x = "2";
+			return x;
+		}
+	}
+	
+	
+	
 	
     // alert dialog dismissed
     function alertDismissed() {
@@ -1504,22 +1597,234 @@
 	
 	
 	$(document).on('vclick', '#edit_button_card', function(e){
-		card_id = $('#card_id_get').val();
+		var pickid = $(this).attr("class");
+		pickid = pickid.replace ( /[^\d.]/g, '' );
+		pickid = parseInt(pickid);
+		card_id = $('#card_id_get'+pickid).val();
 		editCard(card_id);
 	});
 	
 	$(document).on('vclick', '#share_button_card', function(e){
-		share_fullname = $('#share_fullname').val();
-		share_user_photo = $('#share_user_photo').val();
-		share_shareUrl = $('#share_shareUrl').val();
+		var pickid = $(this).attr("class");
+		pickid = pickid.replace ( /[^\d.]/g, '' );
+		pickid = parseInt(pickid);
+		share_fullname = $('#share_fullname'+pickid).val();
+		share_user_photo = $('#share_user_photo'+pickid).val();
+		share_shareUrl = $('#share_shareUrl'+pickid).val();
 		window.plugins.socialsharing.share(share_fullname, null,share_user_photo, share_shareUrl);
 	});
 	
 	$(document).on('vclick', '#detail_button_card', function(e){
-		card_id = $('#card_id_get').val();
+		var pickid = $(this).attr("class");
+		pickid = pickid.replace ( /[^\d.]/g, '' );
+		pickid = parseInt(pickid);
+		card_id = $('#card_id_get'+pickid).val();
 		cartDetails(card_id);
 	});
 	
+	
+	
+	function contactAdd(first_name,last_name,email,mobile,profilephoto) {
+		//var profilephoto = profilephoto.replace("large", "thumb");
+		
+		var options = new ContactFindOptions();
+		var full_name ='';
+		if(first_name && last_name){
+			full_name = first_name+' '+last_name;
+		} else if(first_name!='' && last_name==''){
+			full_name = first_name;
+		} else if(first_name=='' && last_name!=''){
+			full_name = last_name;
+		}
+		
+		options.filter   = full_name;
+		options.multiple = true; 
+		var fields = ["displayName", "name"];
+		navigator.contacts.find(fields, onSuccess, onErrorchek, options);
+	
+		function onSuccess(contacts) {
+				
+			   if(contacts.length>0){
+					// already exists cheak
+				  
+				  
+				  var to_add = contactConfirm();
+				  if (to_add == 1){
+					  var myContact = navigator.contacts.create(
+						 {
+						 "displayName":first_name,
+						 "name":{
+						 "givenName":first_name,
+						 "formatted":full_name,
+						 "familyName":last_name
+						 },
+						 "phoneNumbers":[
+						 {"type":"mobile","value": mobile,"id":0,"pref":false}
+						 ],
+						 "emails":[
+						 {"type":"home","value":email,"id":0,"pref":false}
+						 ]
+						 }
+						 );
+						 var photo=[];
+						photo[0] = new ContactField('photo', profilephoto, false)
+						myContact.photos = photo;
+						myContact.save(onSuccesscon(myContact.name.givenName),onErrorcom);
+				  }
+				  
+									// callback to invoke with index of button pressed
+								// buttonLabels
+					
+					//confirmcheak = confirm('Contact already added. Wish to add again!','ND2NO');
+				}
+				
+				if(contacts.length==0){
+					// create a new contact object
+					var myContact = navigator.contacts.create(
+						 {
+						 "displayName":first_name,
+						 "name":{
+						 "givenName":first_name,
+						 "formatted":full_name,
+						 "familyName":last_name
+						 },
+						 "phoneNumbers":[
+						 {"type":"mobile","value": mobile,"id":0,"pref":false}
+						 ],
+						 "emails":[
+						 {"type":"home","value":email,"id":0,"pref":false}
+						 ]
+						 }
+						 );
+						 var photo=[];
+						photo[0] = new ContactField('photo', profilephoto, false)
+						myContact.photos = photo;
+						myContact.save(onSuccesscon(myContact.name.givenName),onErrorcom);
+						
+				}  	
+		}
+		
+		function onErrorchek(contactError) {
+			showAlert("Oops Something went wrong! Please try again later.");
+		}
+	}
+	function onSuccesscon(full_name) {
+		full_name = (full_name)?full_name:'Card'; 
+		showAlert(full_name+" has been added to your contacts!")
+	}
+
+	function onErrorcom() {
+		showAlert("Oops Something went wrong! Please try again later.");
+	} 
+	
+	function contactConfirm() {
+		var y;
+		if (confirm("Contact details already exists, do you want to add again?") == true) {
+			y = "1";
+			return y;
+		} else {
+			y = "2";
+			return y;
+		}
+	} 
+	
+	
+	/*--------- Update Card Image -----------*/
+	
+	function imageTemplate(card_id, type) {
+		
+		user_id = localStorage.getItem('userid');
+		if(user_id==null || user_id==''){
+			user_id = localStorage.getItem('userid-2');
+		}
+		if(user_id && card_id && type) {
+			$.mobile.changePage("#card-image-update",{allowSamePageTransition:false,reloadPage:false,changeHash:true,transition:"slide"});
+			
+			html_cardimage = '<img style="display:none;" id="cameraPicCard1" alt="" src=""><input type="hidden" name="card_id_image" id="card_id_image" value="'+card_id+'"><input type="hidden" name="card_type_image" id="card_type_image" value="'+type+'"><div id="camera" style="height: 60px;"><button class="camera-control ui-btn ui-shadow ui-corner-all" type="button" onclick="cardimagesPhoto('+card_id+','+type+');" style="width: 50%; float: left;">Camera</button><button class="camera-control ui-btn ui-shadow ui-corner-all" type="button" onclick="cardimagesgetPhoto('+card_id+','+type+');" style="width: 50%; float: right;">Gallery</button></div>'
+			$('.cardimagesHtml').html(html_cardimage);
+		}
+	} 
+	
+	
+	
+	/*--------------  Update Card Images --------------*/
+	
+	var pictureSourceCardTemplate;   // picture source
+	var destinationTypeCardTemplate; // sets the format of returned value
+
+	document.addEventListener("deviceready", onDeviceReadyCardTemplate, false);
+
+	function onDeviceReadyCardTemplate() {
+	    pictureSourceCardTemplate   = navigator.camera.PictureSourceType;
+	    destinationTypeCardTemplate = navigator.camera.DestinationType;
+	}
+
+	function clearCache() {
+	    navigator.camera.cleanup();
+	} 
+
+	var sPicDataCardTemplate; //store image data for image upload functionality
+
+	function cardimagesPhoto(){
+	    navigator.camera.getPicture(picOnSuccessCardTemplate, picOnFailureCardTemplate, {
+	                                quality: 20,
+	                                destinationTypeCardTemplate: destinationTypeCardTemplate.FILE_URI,
+	                                sourceType: pictureSourceCardTemplate.CAMERA,
+	                                correctOrientation: true
+	                                });
+	}
+
+	function cardimagesgetPhoto(){
+	    navigator.camera.getPicture(picOnSuccessCardTemplate, picOnFailureCardTemplate, {
+	        quality: 20,
+	        destinationTypeCardTemplate: destinationTypeCardTemplate.FILE_URI,
+	        sourceType: pictureSourceCardTemplate.SAVEDPHOTOALBUM,
+	        correctOrientation: true
+	    });
+	}
+
+	function picOnSuccessCardTemplate(imageData){
+	
+	    var image = document.getElementById('cameraPicCard1');
+		image.src = imageData;
+	    sPicDataCardTemplate  = imageData; //store image data in a variable
+		card_id_image = $('#card_id_image').val();
+		card_type_image = $('#card_type_image').val();
+		photoUploadCardTemplate(card_id_image,card_type_image);
+	}
+
+	function picOnFailureCardTemplate(message){
+	   showAlert('Image not uploaded because: ' + message);
+	}
+
+	// ----- upload image ------------
+	function photoUploadCardTemplate(card_id_image,card_type_image) {
+	    var options = new FileUploadOptions();
+	    options.fileKey = "file";
+	    options.fileName = sPicDataCardTemplate.substr(sPicDataCardTemplate.lastIndexOf('/') + 1);
+	    options.mimeType = "image/jpeg";
+	    options.chunkedMode = false;
+
+	    var params = new Object();
+	    params.fileKey = "file";
+	    options.params = {}; // eig = params, if we need to send parameters to the server request
+	    ft = new FileTransfer();
+	    ft.upload(sPicDataCardTemplate, webservice_url+"update-card-image/"+card_id_image+'/'+card_type_image, wincardtemplate, failcardtemplate, options);
+	}
+	
+
+	function wincardtemplate(r){
+		card_id_image = $('#card_id_image').val();
+		/*------------ Images upload -----------*/
+		message = (r.response)?r.response:'';
+		showAlert(message);
+		cartDetails(card_id_image);
+	}
+
+	function failcardtemplate(error){
+		message = "Not able to upload this image, please try another!";
+		showAlert(message);
+	}
 	
 	$(document).on('pageshow', '[data-role="page"]', function() {
 		loading('hide', 1000);

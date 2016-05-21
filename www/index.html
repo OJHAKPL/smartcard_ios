@@ -2,13 +2,14 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+		<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; img-src * data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Smartcard Global</title>
 		<link rel="shortcut icon" href="favicon.ico">
 		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="stylesheet" href="css/slideme.css">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+		<link rel="stylesheet" href="css/google_font.css">
 		
 		<script src="cordova.js"></script>
 		<script src="js/jquery.js"></script>
@@ -20,6 +21,7 @@
 	</head>
 	
 	<body>
+	
 		<div data-role="page" class="jqm-demos jqm-home" id="index" data-url="index">
 			<div role="main" class="ui-content jqm-content">			
 				<div class="home-logo"><img class="b-radiu-logo" src="images/logo.png" alt="" /></div>
@@ -38,14 +40,16 @@
 				<div class="loderimages loader_login"><img src="images/loader-page.gif"><p>Loading...</p></div>
 				<p class="errorMsgShow" style="text-align:center; display:none;"></p>
 				<div class="login-form">
-					<input type="text" name="text-basic" placeholder="Email ID" id="login-email" value="">
+				<form method="post" id="roleManagement" action="">
+					<input type="text" name="text-basic" placeholder="Email Address" id="login-email" value="">
 					<input type="password" name="text-basic" placeholder="Password" id="login-password" value="">
 					<div class="forgot-link"><a href="#forgot-password">Forgot password?</a></div>
 					<div class="keeps-checkbox">
-						<input type="checkbox" name="keep_me_login" id="keep_me_login" value="" checked="">
+						<input type="checkbox" name="keep_me_login" id="keep_me_login"  checked="">
                         <label for="keep_me_login">Keep me signed in</label>
 					</div>
 					<button onClick="homeLogin()" class="ui-btn ui-btn-submit ui-corner-all">Login</button>
+				</form>
 					<div class="other-link">Don't have account? <a href="#register" data-direction="reverse" data-transition="slide">Click here</a></div>
 				</div>
 			</div>
@@ -58,7 +62,7 @@
 				<p class="errorMsgShow" style="text-align:center; display:none;"></p> 
 				<div class="login-form">
 					<form id="forgotpassword_form" method="post" enctype="multipart/form-data" name="forgotpassword_form">
-						<input type="text" name="forgot_email" placeholder="Email ID" id="forgot_email" value=""/>
+						<input type="text" name="forgot_email" placeholder="Email Address" id="forgot_email" value=""/>
 						<button id="forgot-email-button" onClick="forgotPassword();" class="ui-btn ui-btn-submit ui-corner-all">Forgot Password</button>
 					</form>
 					<div class="other-link">Don't have account? <a href="#login" data-direction="reverse" data-transition="slide">Click here</a></div>
@@ -75,7 +79,8 @@
 					<form id="register_form">
 						<input type="text" name="first_name" placeholder="First Name" id="first_name" value="">
 						<input type="text" name="last_name" placeholder="Last Name" id="last_name" value="">
-						<input type="text" name="email" placeholder="Email ID" id="email" value="">
+						<input type="text" name="email" placeholder="Email Address" id="email" value="">
+						<input type="text" name="c_email" placeholder="Confirm Email Address" id="c_email" value="">
 						<input type="password" name="password" placeholder="Password" id="password" value="">
 						<input type="text"  data-validation="number" name="phone" placeholder="Phone" id="validPhoneNumber" value="">
 						<div class="keeps-checkbox">
@@ -84,11 +89,6 @@
 						</div>
 						<button type="submit" onClick="register()" class="ui-btn ui-btn-submit ui-corner-all">Register</button>
 					</form>
-					<script type="text/javascript">
-						jQuery(function($){
-							jQuery("#validPhoneNumber").mask("(999) 999-9999");
-						});
-					</script>
 					<div class="other-link">Already have account? <a href="#login" data-direction="reverse" data-transition="slide">Click here</a></div>
 				</div>
 			</div>
@@ -127,7 +127,7 @@
 			</div><!-- /content --> 
 
 			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
-				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com','_system');" >Get a SmartCard</a></div>
+				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com/register','_system');" >Get a SmartCard</a></div>
 			</div>
             
 			<div data-role="panel" class="menu-new main-menu jqm-navmenu-panel" data-position="right" data-display="overlay">
@@ -170,7 +170,7 @@
 			</div>
 			
 			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
-				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com','_system');" >Get a SmartCard</a></div>
+				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com/register','_system');" >Get a SmartCard</a></div>
 			</div>
             
 			<div data-role="panel" class="menu-new main-menu jqm-navmenu-panel" data-position="right" data-display="overlay">
@@ -207,8 +207,8 @@
 				<div class="EditProfileHtml"></div> 
 			</div>
 			
-			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
-				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com','_system');" >Get a SmartCard</a></div>
+			<div style="position: fixed;" data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
+				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com/register','_system');" >Get a SmartCard</a></div>
 			</div>
 			
 			<div data-role="panel" class="menu-new main-menu jqm-navmenu-panel" data-position="right" data-display="overlay">
@@ -268,7 +268,7 @@
 			
 
 			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
-				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com','_system');" >Get a SmartCard</a></div>
+				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com/register','_system');" >Get a SmartCard</a></div>
 			</div><!-- /footer -->
             
 			<div data-role="panel" class="menu-new main-menu jqm-navmenu-panel" data-position="right" data-display="overlay">
@@ -308,7 +308,7 @@
 			</div>
 			
 			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
-				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com','_system');" >Get a SmartCard</a></div>
+				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com/register','_system');" >Get a SmartCard</a></div>
 			</div>
 			
 			<div data-role="panel" class="menu-new main-menu jqm-navmenu-panel" data-position="right" data-display="overlay">
@@ -349,7 +349,7 @@
 			</div>
 			
 			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
-				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com','_system');" >Get a SmartCard</a></div>
+				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com/register','_system');" >Get a SmartCard</a></div>
 			</div>
 			
 			<div data-role="panel" class="menu-new main-menu jqm-navmenu-panel" data-position="right" data-display="overlay">
@@ -390,7 +390,7 @@
 			</div>
 			
 			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
-				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com','_system');" >Get a SmartCard</a></div>
+				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com/register','_system');" >Get a SmartCard</a></div>
 			</div>
 			
 			<div data-role="panel" class="menu-new main-menu jqm-navmenu-panel" data-position="right" data-display="overlay">
@@ -408,7 +408,7 @@
 		
 		<!----------- Card templates List ------------>
 		
- 		<div data-role="page" class="jqm-demos jqm-page jqm-card" id="card-templates-list" data-url="card-templates-list">        
+ 		<div data-role="page" class="jqm-demos jqm-page jqm-card jqm-home-card-templete" id="card-templates-list" data-url="card-templates-list">        
 			
 			<div data-role="header" class="jqm-header">                
                <div class="left-icon">
@@ -436,7 +436,7 @@
 			</div> 
 
 			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
-				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com','_system');" >Get a SmartCard</a></div>
+				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com/register','_system');" >Get a SmartCard</a></div>
 			</div><!-- /footer -->
             
 			<div data-role="panel" class="menu-new main-menu jqm-navmenu-panel" data-position="right" data-display="overlay">
@@ -523,7 +523,7 @@
 			</div>
 			
 			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
-				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com','_system');" >Get a SmartCard</a></div>
+				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com/register','_system');" >Get a SmartCard</a></div>
 			</div>
 			
 			<div data-role="panel" class="menu-new main-menu jqm-navmenu-panel" data-position="right" data-display="overlay">
@@ -586,7 +586,7 @@
 			</div> 
 			
 			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
-				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com','_system');" >Get a SmartCard</a></div>
+				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com/register/register','_system');" >Get a SmartCard</a></div>
 			</div>
             
 			<div data-role="panel" class="menu-new main-menu jqm-navmenu-panel" data-position="right" data-display="overlay">
@@ -606,7 +606,7 @@
 		
 		<!----------- paper cards List ------------>
 		
- 		<div data-role="page" class="jqm-demos jqm-page jqm-card" id="paper-card-list" data-url="paper-card-list">        
+ 		<div data-role="page" class="jqm-demos jqm-page jqm-card jqm-home-card-templete" id="paper-card-list" data-url="paper-card-list">        
 			
 			<div data-role="header" class="jqm-header">                
                <div class="left-icon">
@@ -640,7 +640,7 @@
 			</div> 
 
 			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
-				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com','_system');" >Get a SmartCard</a></div>
+				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com/register','_system');" >Get a SmartCard</a></div>
 			</div><!-- /footer -->
             
 			<div data-role="panel" class="menu-new main-menu jqm-navmenu-panel" data-position="right" data-display="overlay">
@@ -685,7 +685,57 @@
 			</div> 
 
 			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
-				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com','_system');" >Get a SmartCard</a></div>
+				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com/register','_system');" >Get a SmartCard</a></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			</div><!-- /footer -->
             
 			<div data-role="panel" class="menu-new main-menu jqm-navmenu-panel" data-position="right" data-display="overlay">
@@ -701,11 +751,55 @@
 		</div><!-- /page -->  
 		
 		
+		<!----------- update cards images ------------>
 		
+ 		<div data-role="page" class="jqm-demos jqm-page jqm-card" id="card-image-update" data-url="card-image-update">        
+			
+			<div data-role="header" class="jqm-header">                
+               <div class="left-icon">
+					<a href="javascript:void(0);" onClick="onBackKeyDown()" class="back-button"><img src="images/back-icon.png" alt=""></a>
+				</div>
+				<div class="right-icon">
+					<a href="javascript:void(0);" onClick="navigationOpen()" class="jqm-navmenu-link1 menu-button ui-link"><img src="images/menu-icon.png" alt=""></a>
+				</div>
+                <h1 class="title">Card Image</h1>
+				<div class="horizental-nav">
+					<ul id="horizental_nav">
+						<li><a class="card-list-page" onClick="cardlist()" href="javascript:;">Home</a></li>
+						<li><a class="my-folderlist-page" onClick="myfolderList()" href="javascript:;">Cards</a></li>
+						<li><a class="view-profile-page" onClick="viewProfile()" href="javascript:;">Profile</a></li>
+					</ul>
+				</div>			
+            </div><!-- /header -->
+
+			<div role="main" class="no-padding">  
+				<div class="contand-for"></div>
+				<p class="errorMsgShow" style="text-align:center; display:none;"></p>
+				<div class="loderimages loader_papercard"><img src="images/loader-page.gif"><p>Loading...</p></div>
+				<div class="add-paper-card">
+					<b class="title">Update Card Image</b>
+					<div class="cardimagesHtml"></div>
+				</div>
+			</div> 
+
+			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
+				<div class="rewards-line"><a href="javascript:void(0);" onClick="window.open('https://www.smartcardglobal.com','_system');" >Get a SmartCard</a></div>
+			</div><!-- /footer -->
+            
+			<div data-role="panel" class="menu-new main-menu jqm-navmenu-panel" data-position="right" data-display="overlay">
+                <ul class="jqm-list ui-alt-icon ui-nodisc-icon">
+                    <li><a href="javascript:void(0);" onClick="cardlist()" data-ajax="false">Home</a></li>
+                    <li><a href="javascript:void(0);" rel="external" onClick="viewProfile()" data-ajax="false">Profile</a></li>
+                    <li><a href="javascript:void(0);" onClick="myfolderList()" data-ajax="false">Search Cards</a></li>
+                    <li><a href="javascript:void(0);" onClick="myfolderList()" data-ajax="false">Cards</a></li>
+                    <li><a href="#change-password" data-ajax="false">Change Password</a></li> 
+                    <li><a href="javascript:void(0);" onClick="logout();" data-ajax="false">Logout</a></li>
+				</ul>
+			</div>
+		</div><!-- /page -->   
 		
 		
 		<script src="js/swiper.min.js"></script>
-		<script src="js/masked.js"></script>
 		<script type="text/javascript">
 			$('#foo').slideme({
 				arrows: true,

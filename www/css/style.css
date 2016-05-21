@@ -4,10 +4,12 @@ body, input, select, textarea, button, .ui-btn, div, h1, h2, h3, h4, h5, h6{
 }
 /*Home CSS*/
 .jqm-home{
-	background:url(../images/bg_reap.png) repeat;
+	background: rgba(0, 0, 0, 0) url(../images/AppBackground1.jpg) repeat scroll 0 0 / 100% 100%;
 	font-family:"Open Sans";
 	text-shadow:none;
 }
+
+ 
 .card-shape{
 	text-align:center;
 	padding:0 0 15px;
@@ -26,7 +28,7 @@ body, input, select, textarea, button, .ui-btn, div, h1, h2, h3, h4, h5, h6{
 .home-logo img{
 	border-radius: 66px;
     height: 125px;
-	max-width:55%;
+	max-width:80%;
 }
 .home-buttons ul > li a.ui-btn{
 	font-size:18px;
@@ -291,7 +293,7 @@ body, input, select, textarea, button, .ui-btn, div, h1, h2, h3, h4, h5, h6{
 .folder-list .title{
     font-size: 18px;
 	margin-left:16px;
-	margin-bottom:0px;
+	margin-bottom: 0px;
 }
 .folder-list .title .add-btn{
     display: inline-block;
@@ -348,7 +350,7 @@ body, input, select, textarea, button, .ui-btn, div, h1, h2, h3, h4, h5, h6{
 }
 .add-folder{
     margin-left: 14px;
-    margin-top: -19px;
+    margin-top:  10px;
     width: 92%;
 }
 .add-folder .ui-input-text{
@@ -807,9 +809,13 @@ img.responsimg {
 
 .ui-input-text input::-moz-placeholder, .ui-input-search input::-moz-placeholder, textarea.ui-input-text::-moz-placeholder{ color:#000!important;}
 
-#bg-card-rep{ background:url(../images/bg_reap.png) repeat;}
+#bg-card-rep{ background: rgba(0, 0, 0, 0) url(../images/AppBackground1.jpg) repeat scroll 0 0 / 100% 100%;}
 
-#view-profile, #edit-profile, #update-card, #card-link , #card-scroller, #card-details, #change-password{ background:url(../images/bg_reap.png) repeat;}
+#view-profile, #edit-profile, #update-card, #card-link , #card-scroller, #card-details, #change-password,  #card-templates-list, #paper-card-list { 
+	background: rgba(0, 0, 0, 0) url(../images/AppBackground1.jpg) repeat scroll 0 0 / 100% 100%;
+	height:510px;
+}
+/*#view-profile, #edit-profile, #update-card, #card-link , #card-scroller, #card-details, #change-password { background: rgba(0, 0, 0, 0) url(../images/AppBackground1.jpg) repeat scroll 0 0 / 100% 100%; }*/ 
 
 .padding-space {
   padding: 50px 25px 56px;
@@ -864,7 +870,7 @@ img.responsimg {
 .banner-image {
   background: #f0f6fd none repeat scroll 0 0;
   box-shadow: 0 0 4px #839fb9;
-  height: 130px; margin-bottom:12px;
+  height: 149px; margin-bottom:12px;
 }
 .banner-image > img{ width:100%;} 
  
@@ -920,7 +926,7 @@ img.responsimg {
 }
 
 
-.vertical-link li{ list-style:none; padding:6px 0;}
+.vertical-link li{ list-style:none; padding:4px 0;}
 .vertical-link img {
   width: 20px;
 }
@@ -1146,15 +1152,21 @@ img.responsimg {
 }
 
 .card-templete {
-  background: #f0f6fd none repeat scroll 0 0;
-  box-shadow: 0 0 4px #839fb9;
+  /*background: #f0f6fd none repeat scroll 0 0;
+  box-shadow: 0 0 4px #839fb9;*/
   height: 160px; margin-bottom:12px;
 }
-
 .card-templete > img {
+	display: table;
+    height: 160px;
+    margin: 0 auto;
+    width: 50%;
+}
+
+/*.card-templete > img {
     height: 160px;
     width: 100%;
-}
+}*/
 .temp-apply {
 	margin-top: -32px; text-align: right;
 }
