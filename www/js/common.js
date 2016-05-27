@@ -385,7 +385,7 @@
 	}
 
 	function fail(error){
-		message = "Not able to upload this image, please try another!";
+		message = "An error has occurred: Code = "+ error.code
 		showAlert(message);
 	}
 	
@@ -530,30 +530,82 @@
 				error.appendTo(element.parent().add());
 			},
 			submitHandler:function (form) {
-				var push_response = pushConfirm();
-				card_id = jQuery('#editcard').find('input[name="id"]').val();
-				$.ajax({
-					type: 'POST',
-					url: webservice_url+'web-update-card/'+card_id+'/'+push_response,
-					beforeSend: function(){
-						$('.loader_useredit').show();
-					},
-					complete: function(){
-						$('.loader_useredit').hide();
-					},
-					data : $('#editcard').serialize(),
-					success: function(updateCard){ 
-						var dataMsg = jQuery.parseJSON(updateCard);	
-						if(dataMsg.error){
-							showAlert(dataMsg.error);
-						}
-						if(dataMsg.success){
-							showAlert(dataMsg.success);
-							cartDetails(card_id);
-						}
-					},
-					dataType: 'html'
-				}); 
+				
+                //var push_response = pushConfirm();
+                                
+           
+                $.confirm({
+                    'title'		: 'Smartcard Global',
+                    'message'	: 'Do you want to send push notifications for this update?',
+                    'buttons'	: {
+                        'Yes'	: {
+                            'class'	: 'blue',
+                            'action': function(){
+                          push_response = 1;
+                          card_id = jQuery('#editcard').find('input[name="id"]').val();
+                          $.ajax({
+                                 type: 'POST',
+                                 url: webservice_url+'web-update-card/'+card_id+'/'+push_response,
+                                 beforeSend: function(){
+                                 $('.loader_useredit').show();
+                                 },
+                                 complete: function(){
+                                 $('.loader_useredit').hide();
+                                 },
+                                 data : $('#editcard').serialize(),
+                                 success: function(updateCard){
+                                 var dataMsg = jQuery.parseJSON(updateCard);	
+                                 if(dataMsg.error){
+                                 showAlert(dataMsg.error);
+                                 }
+                                 if(dataMsg.success){
+                                 showAlert(dataMsg.success);
+                                 cartDetails(card_id);
+                                 }
+                                 },
+                                 dataType: 'html'
+                            });
+                                          
+                            }
+                        },
+                        'No'	: {
+                            'class'	: 'gray',
+                            'action': function(){
+                          
+                                push_response = 2;
+                                card_id = jQuery('#editcard').find('input[name="id"]').val();
+                                $.ajax({
+                                       type: 'POST',
+                                 url: webservice_url+'web-update-card/'+card_id+'/'+push_response,
+                                 beforeSend: function(){
+                                 $('.loader_useredit').show();
+                                 },
+                                 complete: function(){
+                                 $('.loader_useredit').hide();
+                                 },
+                                 data : $('#editcard').serialize(),
+                                 success: function(updateCard){
+                                 var dataMsg = jQuery.parseJSON(updateCard);
+                                 if(dataMsg.error){
+                                 showAlert(dataMsg.error);
+                                 }
+                                 if(dataMsg.success){
+                                 showAlert(dataMsg.success);
+                                 cartDetails(card_id);
+                                 }
+                                 },
+                                 dataType: 'html'
+                                 });
+                          
+                          
+                            }	// Nothing to do in this case. You can as well omit the action property.
+                        }
+                    }
+                });
+                                
+                                
+                //alert(push_response);
+
 			}
 		});
 	}	
@@ -634,8 +686,12 @@
 	
 	
 	/*--------------- Form Submit Card Link --------------*/
+ 
+
+
 	function cardLinkSubmit() {
-		var card_id = $('#id').val();
+       
+       var card_id = $('#id').val();
 		$('#editcard_link').validate({
 			rules: {
 				id: {
@@ -1392,7 +1448,7 @@
 	}
 
 	function failcard(error){
-		message = "Not able to upload this image, please try another!";
+		message =  "An error has occurred: Code = " +error.code
 		showAlert(message);
 	} 
 	
@@ -1550,6 +1606,13 @@
 	}  
 	
 	function pushConfirm() {
+        
+        alert('hello');
+        
+        $( "#confirm_popup" ).dialog({minHeight: 433,minWidth:550,"title":"Json to Template"});
+        
+        $('#confirm_popup').popup('open');
+        
 		var x;
 		if (confirm("Do you want to send push notifications for this update?") == true) {
 			x = "1";
@@ -1559,10 +1622,8 @@
 			return x;
 		}
 	}
-	
-	
-	
-	
+
+
     // alert dialog dismissed
     function alertDismissed() {
         // do something
@@ -1578,8 +1639,8 @@
             'Ok'                  // buttonName
         );
     }
-	
-	
+
+
 	$(document).on("pagechange", function (e, data) {
 		var page = data.toPage[0].id;
 		$(".card-list-page").removeClass("active-menu");
@@ -1822,7 +1883,7 @@
 	}
 
 	function failcardtemplate(error){
-		message = "Not able to upload this image, please try another!";
+		message =  "An error has occurred: Code = " +error.code
 		showAlert(message);
 	}
 	
