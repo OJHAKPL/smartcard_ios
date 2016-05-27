@@ -531,8 +531,7 @@
 			},
 			submitHandler:function (form) {
 				
-                //var push_response = pushConfirm();
-                                
+                //var push_response = pushConfirm(); 
            
                 $.confirm({
                     'title'		: 'Smartcard Global',
@@ -541,71 +540,63 @@
                         'Yes'	: {
                             'class'	: 'blue',
                             'action': function(){
-                          push_response = 1;
-                          card_id = jQuery('#editcard').find('input[name="id"]').val();
-                          $.ajax({
-                                 type: 'POST',
-                                 url: webservice_url+'web-update-card/'+card_id+'/'+push_response,
-                                 beforeSend: function(){
-                                 $('.loader_useredit').show();
-                                 },
-                                 complete: function(){
-                                 $('.loader_useredit').hide();
-                                 },
-                                 data : $('#editcard').serialize(),
-                                 success: function(updateCard){
-                                 var dataMsg = jQuery.parseJSON(updateCard);	
-                                 if(dataMsg.error){
-                                 showAlert(dataMsg.error);
-                                 }
-                                 if(dataMsg.success){
-                                 showAlert(dataMsg.success);
-                                 cartDetails(card_id);
-                                 }
-                                 },
-                                 dataType: 'html'
-                            });
-                                          
+								push_response = 1;
+								card_id = jQuery('#editcard').find('input[name="id"]').val();
+								$.ajax({
+									type: 'POST',
+									url: webservice_url+'web-update-card/'+card_id+'/'+push_response,
+									beforeSend: function(){
+										$('.loader_useredit').show();
+									},
+									complete: function(){
+										$('.loader_useredit').hide();
+									 },
+									data : $('#editcard').serialize(),
+									success: function(updateCard){
+									var dataMsg = jQuery.parseJSON(updateCard);	
+										if(dataMsg.error){
+											showAlert(dataMsg.error);
+										}
+										if(dataMsg.success){
+											showAlert(dataMsg.success);
+											cartDetails(card_id);
+										}
+									},
+									dataType: 'html'
+								});       
                             }
                         },
                         'No'	: {
                             'class'	: 'gray',
                             'action': function(){
-                          
                                 push_response = 2;
                                 card_id = jQuery('#editcard').find('input[name="id"]').val();
                                 $.ajax({
-                                       type: 'POST',
-                                 url: webservice_url+'web-update-card/'+card_id+'/'+push_response,
-                                 beforeSend: function(){
-                                 $('.loader_useredit').show();
-                                 },
-                                 complete: function(){
-                                 $('.loader_useredit').hide();
-                                 },
-                                 data : $('#editcard').serialize(),
-                                 success: function(updateCard){
-                                 var dataMsg = jQuery.parseJSON(updateCard);
-                                 if(dataMsg.error){
-                                 showAlert(dataMsg.error);
-                                 }
-                                 if(dataMsg.success){
-                                 showAlert(dataMsg.success);
-                                 cartDetails(card_id);
-                                 }
-                                 },
-                                 dataType: 'html'
-                                 });
-                          
-                          
-                            }	// Nothing to do in this case. You can as well omit the action property.
+								   type: 'POST',
+									url: webservice_url+'web-update-card/'+card_id+'/'+push_response,
+									beforeSend: function(){
+										$('.loader_useredit').show();
+									},
+									complete: function(){
+										$('.loader_useredit').hide();
+									},
+									data : $('#editcard').serialize(),
+									success: function(updateCard){
+										var dataMsg = jQuery.parseJSON(updateCard);
+										if(dataMsg.error){
+											showAlert(dataMsg.error);
+										}
+										if(dataMsg.success){
+											showAlert(dataMsg.success);
+											cartDetails(card_id);
+										}
+									},
+									dataType: 'html'
+                                });
+                            }	
                         }
                     }
                 });
-                                
-                                
-                //alert(push_response);
-
 			}
 		});
 	}	
@@ -707,29 +698,74 @@
 				error.appendTo(element.parent().add());
 			},
 			submitHandler:function (form) {
-				var push_response = pushConfirm();
-				$.ajax({
-					type: 'POST',
-					url: webservice_url+'web-update-link/'+push_response,
-					beforeSend: function(){
-						$('.loader_cardlinklist').show();
-					},
-					complete: function(){
-						$('.loader_cardlinklist').hide();
-					},
-					data : $('#editcard_link').serialize(),
-					success: function(updateCard) {
-						var dataMsg = jQuery.parseJSON(updateCard);	
-						if(dataMsg.error){
-							showAlert(dataMsg.error);
-						}
-						if(dataMsg.success){
-							showAlert(dataMsg.success);
-							cartDetails(card_id);
-						}
-					},
-					dataType: 'html'
-				});
+				
+				//var push_response = pushConfirm();
+				
+                $.confirm({
+                    'title'		: 'Smartcard Global',
+                    'message'	: 'Do you want to send push notifications for this update?',
+                    'buttons'	: {
+                        'Yes'	: {
+                            'class'	: 'blue',
+                            'action': function(){	
+								push_response = 1;
+								$.ajax({
+									type: 'POST',
+									url: webservice_url+'web-update-link/'+push_response,
+									beforeSend: function(){
+										$('.loader_cardlinklist').show();
+									},
+									complete: function(){
+										$('.loader_cardlinklist').hide();
+									},
+									data : $('#editcard_link').serialize(),
+									success: function(updateCard) {
+										var dataMsg = jQuery.parseJSON(updateCard);	
+										if(dataMsg.error){
+											showAlert(dataMsg.error);
+										}
+										if(dataMsg.success){
+											showAlert(dataMsg.success);
+											cartDetails(card_id);
+										}
+									},
+									dataType: 'html'
+								});
+							
+							}
+                        },
+                        'No'	: {
+                            'class'	: 'gray',
+                            'action': function(){	
+								push_response = 2;
+								$.ajax({
+									type: 'POST',
+									url: webservice_url+'web-update-link/'+push_response,
+									beforeSend: function(){
+										$('.loader_cardlinklist').show();
+									},
+									complete: function(){
+										$('.loader_cardlinklist').hide();
+									},
+									data : $('#editcard_link').serialize(),
+									success: function(updateCard) {
+										var dataMsg = jQuery.parseJSON(updateCard);	
+										if(dataMsg.error){
+											showAlert(dataMsg.error);
+										}
+										if(dataMsg.success){
+											showAlert(dataMsg.success);
+											cartDetails(card_id);
+										}
+									},
+									dataType: 'html'
+								});
+								
+							}	
+                        }
+                    }
+                });	
+				
 			}
 		});
 	}  	
@@ -741,11 +777,7 @@
 	
 	function onBackKeyDown() {
 		history.go(-1);
-	}
-	
-	
-
-
+	} 
 	
 	
 	
@@ -837,31 +869,78 @@
 				error.appendTo(element.parent().add());
 			},
 			submitHandler:function (form) {
-				var push_response = pushConfirm();
-				$.ajax({
-					type: 'POST',
-					url: webservice_url+'web-update-scroller/'+push_response,
-					beforeSend: function(){
-						$('.loader_cardscroller').show();
-					},
-					complete: function(){
-						$('.loader_cardscroller').hide();
-					},
-					data : $('#editcard_scroller').serialize(),
-					success: function(data_get){ 
-						var dataMsg = jQuery.parseJSON(data_get);	
-						if(dataMsg.error){
-							$('.loader_cardscroller').hide();
-							showAlert(dataMsg.error);
-						}
-						if(dataMsg.success){
-							$('.loader_cardscroller').hide();
-							showAlert(dataMsg.success);
-							cartDetails(card_id);
-						}
-					},
-					dataType: 'html'
-				});
+				
+				//var push_response = pushConfirm();
+				
+                $.confirm({
+                    'title'		: 'Smartcard Global',
+                    'message'	: 'Do you want to send push notifications for this update?',
+                    'buttons'	: {
+                        'Yes'	: {
+                            'class'	: 'blue',
+                            'action': function(){	
+								push_response = 1;
+								$.ajax({
+									type: 'POST',
+									url: webservice_url+'web-update-scroller/'+push_response,
+									beforeSend: function(){
+										$('.loader_cardscroller').show();
+									},
+									complete: function(){
+										$('.loader_cardscroller').hide();
+									},
+									data : $('#editcard_scroller').serialize(),
+									success: function(data_get){ 
+										var dataMsg = jQuery.parseJSON(data_get);	
+										if(dataMsg.error){
+											$('.loader_cardscroller').hide();
+											showAlert(dataMsg.error);
+										}
+										if(dataMsg.success){
+											$('.loader_cardscroller').hide();
+											showAlert(dataMsg.success);
+											cartDetails(card_id);
+										}
+									},
+									dataType: 'html'
+								});
+							
+							}
+                        },
+                        'No'	: {
+                            'class'	: 'gray',
+                            'action': function(){	
+								push_response = 2;
+								$.ajax({
+									type: 'POST',
+									url: webservice_url+'web-update-scroller/'+push_response,
+									beforeSend: function(){
+										$('.loader_cardscroller').show();
+									},
+									complete: function(){
+										$('.loader_cardscroller').hide();
+									},
+									data : $('#editcard_scroller').serialize(),
+									success: function(data_get){ 
+										var dataMsg = jQuery.parseJSON(data_get);	
+										if(dataMsg.error){
+											$('.loader_cardscroller').hide();
+											showAlert(dataMsg.error);
+										}
+										if(dataMsg.success){
+											$('.loader_cardscroller').hide();
+											showAlert(dataMsg.success);
+											cartDetails(card_id);
+										}
+									},
+									dataType: 'html'
+								});
+							
+							}	
+                        }
+                    }
+                });	
+				
 			}
 		});
 	} 
