@@ -1426,30 +1426,43 @@
 	/*---------- Delete Paper Card ---------*/
 	function deletePapercard(paper_card_id) {
 		
-		confirmBox = confirm('Are you sure you want to delete this paper card?');
-		if(confirmBox==true) {
-			$(".paper_card_dev_"+paper_card_id).remove();
-			$.ajax({
-				type: 'POST',
-				url: webservice_url+'web-paper-card-remove',
-				beforeSend: function(){
-					$('.loader_papercard').show();
+		$.confirm({
+			'title'		: 'Smartcard Global',
+			'message'	: 'Are you sure you want to delete this paper card?',
+			'buttons'	: {
+				'Yes'	: {
+					'class'	: 'blue',
+					'action': function() {
+						$(".paper_card_dev_"+paper_card_id).remove();
+						$.ajax({
+							type: 'POST',
+							url: webservice_url+'web-paper-card-remove',
+							beforeSend: function(){
+								$('.loader_papercard').show();
+							},
+							complete: function(){
+								$('.loader_papercard').hide();
+							},
+							data: { "paper_card_id": paper_card_id },
+							success: function(papercardlist){
+								var papercardlistArr = jQuery.parseJSON(papercardlist);
+								if(!papercardlistArr.error) {
+									showAlert(papercardlistArr.success);
+								} else {
+									showAlert(papercardlistArr.error);
+								}
+							},
+							dataType: 'html'
+						});     
+					}
 				},
-				complete: function(){
-					$('.loader_papercard').hide();
-				},
-				data: { "paper_card_id": paper_card_id },
-				success: function(papercardlist){
-					var papercardlistArr = jQuery.parseJSON(papercardlist);
-					if(!papercardlistArr.error) {
-						showAlert(papercardlistArr.success);
-					} else {
-						showAlert(papercardlistArr.error);
- 					}
-				},
-				dataType: 'html'
-			});
-		}
+				'No'	: {
+					'class'	: 'gray',
+					'action': function(){
+					}	
+				}
+			}
+		}); 
 	}
 	
 	
@@ -1686,12 +1699,7 @@
 	
 	function pushConfirm() {
         
-        alert('hello');
-        
-        $( "#confirm_popup" ).dialog({minHeight: 433,minWidth:550,"title":"Json to Template"});
-        
-        $('#confirm_popup').popup('open');
-        
+        //alert('hello');
 		var x;
 		if (confirm("Do you want to send push notifications for this update?") == true) {
 			x = "1";
